@@ -14,7 +14,12 @@ import {
   encryptData,
   hash,
 } from "../../../utils/HashAndEncrypt.js";
-import { generateToken , verifyToken } from "../../../utils/generateAndVerifyToken.js";
+import {
+  generateToken,
+  verifyToken,
+  accessTokenFun,
+  refreshTokenFun
+} from "../../../utils/generateAndVerifyToken.js";
 import { nanoid } from "nanoid";
 import refreshTokenModel from "../../../../DB/model/refreshToken.model.js";
 //====================== Sign up ======================
@@ -40,14 +45,9 @@ export const signup = async (req, res, next) => {
     age,
     phone,
   });
-  user.save()
-  //REFREHToken
-  // const createRefreshToken = await refreshTokenModel({
-  //   owner: user._id
-  // })
-  // const refreshToken = refreshTokenFun(user._id , createRefreshToken._id)
-  // const accessToken = accessTokenFun(user._id )
-
+  user.save();
+  //Refresh token 
+  await refreshTokenModel.create({owner: user._id})
   // Generate token for confirm email
   const token = generateToken({
     payload: { id: user._id, email: user.email },
@@ -160,22 +160,12 @@ export const login = async (req, res, next) => {
     return next(new Error("In-valid login data", { cause: 400 }));
   }
   // const refreshToken = refreshTokenFun(user._id , createRefreshToken._id)
-  // const accessToken = accessTokenFun(user._id )
-  // generate access token
-  const accessToken = generateToken({
-    payload: { id: user._id, isLogged: true, email: user.email },
-    signature: process.env.TOKEN_SIGNATURE,
-    expiresIn: 60 * 60 * 60,
-  });
-  // // generate refresh token
-  // const refreshToken = generateToken({
-  //   payload: { id: user._id, isLogged: true, email: user.email },
-  //   signature: process.env.TOKEN_SIGNATURE,
-  //   expiresIn: "30d",
-  // });
+  const accessToken = accessTokenFun({id: user._id , email:user.email} )
+  const refreshToken = refreshTokenFun({id: user._id , email:user.email} )
+ 
   user.isOnline = true;
   await user.save();
-  return res.status(StatusCodes.OK).json({ message: "Done",  accessToken });
+  return res.status(StatusCodes.OK).json({ message: "Done", accessToken, refreshToken });
 };
 //====================== unsubscribe ======================
 export const unsubscribe = async (req, res, next) => {
@@ -215,6 +205,8 @@ export const forgetPassword = async (req, res, next) => {
   if (!user.confirmEmail) {
     return next(new Error("You have to confirm your Email", { cause: 404 }));
   }
+  //Expire date for code OTP
+  const expiresAt = Date.now() + 120000; // 2 minutes from now
   //Generate code
   const code = nanoid(6);
   // Send code
@@ -224,7 +216,7 @@ export const forgetPassword = async (req, res, next) => {
     html: createHtml(
       `${linkBtn(
         ``,
-        "Forget password",
+        `${code}`,
         `${code} Do not share this OTO with anyone, It will expired`
       )}`,
       ``,
@@ -232,20 +224,24 @@ export const forgetPassword = async (req, res, next) => {
       "Forget password"
     ),
   });
-  await userModel.updateOne({ email }, { code });
+  await userModel.updateOne({ email }, { code , expCode: expiresAt });
   res.status(StatusCodes.ACCEPTED).json({ message: "Check your email" });
 };
 //====================== Reset password ======================
 export const resetPassword = async (req, res, next) => {
-  let { code, password, cPassword, email } = req.body;
+  let { code, password, email } = req.body;
   //Find user(email)
-  const user = await userModel.findOne({ email });
+  let user = await userModel.findOne({ email });
   if (!user) {
     return next(new Error("invalid user information", StatusCodes.BAD_REQUEST));
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
     return next(new Error("You have to confirm your Email", { cause: 400 }));
+  }
+  //Check if code is expired
+  if (Date.now() > user.expCode.getTime() ) {
+    return next(new Error("invalid code or expired code", StatusCodes.BAD_REQUEST));
   }
   //check code
   if (code != user.code) {
@@ -256,35 +252,23 @@ export const resetPassword = async (req, res, next) => {
   //create new code
   const newCode = nanoid(6);
   //update user
-  await userModel.updateOne({ _id: user._id }, { password, code: newCode });
+  await userModel.updateOne(
+    { _id: user._id },
+    { password, code: newCode, updatedTime: Date.now() }
+  );
   res.status(StatusCodes.ACCEPTED).json({ message: "done" });
 };
-//======================  ======================
-// generate access token
-function accessTokenFun() {
-  return generateToken({
-    payload: { id: user._id, isLogged: true, email: user.email },
-    signature: process.env.ACCESS_TOKEN_SECRET,
-    expiresIn: "10m",
-  });
-}
-// generate refresh token
-function refreshTokenFun(userId, refreshTokenId) {
-  return generateToken({
-    payload: { id: user._id, isLogged: true, email: user.email },
-    signature: process.env.REFRESH_TOKEN_SECRET,
-    expiresIn: "30d",
-  });
-}
-// validate refresh token 
-const validateRefreshToken =(token)=>{ verifyToken(token,process.env.REFRESH_TOKEN_SECRET )}
 //====================== New Refresh Token ======================
-// const newRefreshToken = async(req,res,next)=>{
-//   const currentRefreshToken = validateRefreshToken(req.body.refreshToken);
-//    //REFREHToken
-//    const createRefreshToken = await refreshTokenModel({
-//     owner: currentRefreshToken._id
-//   }) 
-//   const refreshToken = refreshTokenFun(user._id , createRefreshToken._id)
-//   const accessToken = accessTokenFun(user._id )
-// }
+export const refreshToken = async(req,res,next)=>{
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return next(new Error("Access Denied. No refresh token provided", StatusCodes.BAD_REQUEST));
+  }
+  const decoded = verifyToken(refreshToken , process.env.REFRESH_TOKEN_SECRET)
+  if (!decoded) {
+    return next(new Error("In-valid refresh token", StatusCodes.BAD_REQUEST));
+  }
+  const accessToken = accessTokenFun({id: user._id , email:user.email} )
+  res.status(StatusCodes.ACCEPTED).json({ accessToken });
+  res.header('authorization', `Hamada__${accessToken}`)
+}

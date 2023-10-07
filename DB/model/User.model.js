@@ -60,8 +60,10 @@ const userSchema = new Schema(
     code:{
       type: String,
       min:[6,'minimum lenght 6 char'],
-      max:[6,'maximum lenght 6 char']
-    }
+      max:[6,'maximum lenght 6 char'],
+    },
+    updatedTime:{type:Date},
+    expCode:{type:Date}
   },
   {
     timestamps: true,

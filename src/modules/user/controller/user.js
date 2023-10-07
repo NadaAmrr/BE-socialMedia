@@ -25,16 +25,20 @@ export const updatePassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   const { password } = req.user;
   const oldPasswordDB = password;
+  const time = Date.now()
+  const iatToken = req.time
+  console.log({tokeniat: iatToken , time});
+  console.log(time);
   // password matched ?
   const match = compare({ plaintext: oldPassword, hashValue: oldPasswordDB });
   if (!match) {
     return next(new Error("Check your old password", { cause: 400 }));
   }
   //Hash new password
-  const passwordCompare = hash({ plaintext: newPassword });
+  const hashNewPassword = hash({ plaintext: newPassword });
   const user = await userModel.updateOne(
     { _id: req.user._id },
-    { passwordCompare }
+    {password: hashNewPassword , updatedTime: Date.now() }
   );
   if (!user) {
     return next(new Error("Not Updated", { cause: 400 }));

@@ -10,3 +10,20 @@ export const verifyToken = ({ token, signature = '' } = {}) => {
     const decoded = jwt.verify(token, signature);
     return decoded
 }
+//======================  ======================
+// generate access token
+export const accessTokenFun = ({id,email}={}) => {
+    return generateToken({
+      payload: { id, isLogged: true, email },
+      signature: process.env.ACCESS_TOKEN_SECRET,
+      expiresIn: 60 * 60 * 60,
+    });
+  }
+  // generate refresh token
+export const refreshTokenFun = ({id,email}={})=>{
+    return generateToken({
+      payload: { id, isLogged: true, email },
+      signature: process.env.REFRESH_TOKEN_SECRET,
+      expiresIn: "30d",
+    });
+  }

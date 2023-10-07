@@ -18,3 +18,18 @@ export const loginSchema = {
       password: generalFields.password,
     }).required(),
   };
+  //forget password schema
+export const forgetPassword = {
+  body: joi.object({
+    email: generalFields.email,
+  }).required(),
+};
+  //reset password schema
+  export const resetPassword = {
+    body: joi.object({
+      email: generalFields.email,
+      password: generalFields.password,
+      cPassword: generalFields.cPassword.valid(joi.ref("password")).required(),
+      code: joi.string().required()
+    }).required(),
+  };
