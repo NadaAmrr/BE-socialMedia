@@ -111,23 +111,24 @@ export const getProfile = async (req, res) => {
         ],
       },
     ]);
-  const queryPost = new ApiFeatures(posts, req.query)
-    .select()
-    .sort()
-    .search()
-    .filter()
-    .pagination(postModel);
-    const post = await queryPost.mongooseQuery;
-  return res
+    const apiFeature = new ApiFeatures( posts ,req.query).pagination().filter().sort().search().select()
+    const result = await apiFeature.mongooseQuery;
+    const totalPages = await postModel.countDocuments();
+    const { page } = apiFeature.queryData;
+    let previousPage = page - 1;
+    if (previousPage <= 0) {
+      previousPage = "No previous page";
+    } 
+    return res
     .status(StatusCodes.OK)
     .json({
       message: "done",
       user,
-      // TotalPages: parseInt(total),
-      // currentPage: current,
-      // nextPage: Number(current) + 1,
-      // previousPage: current - 1,
-      post,
+      TotalPages: parseInt(totalPages),
+      currentPage: page,
+      nextPage: Number(page) + 1,
+      previousPage,
+      result,
     });
 };
 //====================== Update profile

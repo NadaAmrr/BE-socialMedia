@@ -1,6 +1,7 @@
 import commentModel from "../../../../DB/model/Comment.model.js";
 import postModel from "../../../../DB/model/Post.model.js";
 import replyModel from "../../../../DB/model/Reply.model.js";
+import { ApiFeatures } from "../../../utils/apiFeatures.js";
 import cloudinary from "../../../utils/cloudinary.js";
 //====================== Add Post ======================
 export const addPost = async (req, res, next) => {
@@ -229,7 +230,7 @@ export const postUnLike = async (req, res, next) => {
 };
 //====================== get posts created yesterday ======================
 export const getYesterdayPosts = async (req, res, next) => {
-  const posts = await postModel
+  const posts = postModel
     .find({
       createdAt: {
         $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
@@ -252,11 +253,31 @@ export const getYesterdayPosts = async (req, res, next) => {
         ],
       },
     ]);
-  return res.status(200).json({ message: "done", posts });
+  const apiFeature = new ApiFeatures(posts, req.query)
+    .pagination()
+    .filter()
+    .sort()
+    .search()
+    .select();
+    const result = await apiFeature.mongooseQuery;
+    const totalPages = await postModel.countDocuments();
+    const { page } = apiFeature.queryData;
+    let previousPage = page - 1;
+    if (previousPage <= 0) {
+      previousPage = "No previous page";
+    }
+    return res.status(200).json({
+    message: "done",
+    TotalPages: parseInt(totalPages),
+    currentPage: page,
+    nextPage: Number(page) + 1,
+    previousPage,
+    result,
+  });
 };
 //====================== get posts created today ======================
 export const getTodayPosts = async (req, res, next) => {
-  const posts = await postModel
+  const posts = postModel
     .find({
       createdAt: {
         $gte: new Date(new Date().setHours(0, 0, 0)),
@@ -279,11 +300,33 @@ export const getTodayPosts = async (req, res, next) => {
         ],
       },
     ]);
-  return res.status(200).json({ message: "done", posts });
+  const total = await postModel.countDocuments();
+  console.log(total);
+  const apiFeature = new ApiFeatures(posts, req.query)
+    .pagination(postModel)
+    .filter()
+    .sort()
+    .search()
+    .select();
+  const result = await apiFeature.mongooseQuery;
+  const totalPages = await postModel.countDocuments();
+  const { page } = apiFeature.queryData;
+  let previousPage = page - 1;
+  if (previousPage <= 0) {
+    previousPage = "No previous page";
+  }
+  return res.status(200).json({
+    message: "done",
+    TotalPages: parseInt(totalPages),
+    currentPage: page,
+    nextPage: Number(page) + 1,
+    previousPage,
+    result,
+  });
 };
 //====================== Get all posts with their comments ======================
 export const getPosts = async (req, res, next) => {
-  const posts = await postModel.find().populate([
+  const posts = postModel.find().populate([
     {
       path: "createdBy",
       select: ["name"],
@@ -298,26 +341,47 @@ export const getPosts = async (req, res, next) => {
       ],
     },
   ]);
-  return res.status(200).json({ message: "done", posts });
+  const apiFeature = new ApiFeatures(posts, req.query)
+    .pagination()
+    .filter()
+    .sort()
+    .search()
+    .select();
+  const result = await apiFeature.mongooseQuery;
+  const totalPages = await postModel.countDocuments();
+  const { page } = apiFeature.queryData;
+  let previousPage = page - 1;
+  if (previousPage <= 0) {
+    previousPage = "No previous page";
+  }
+  return res.status(200).json({
+    message: "done",
+    TotalPages: parseInt(totalPages),
+    currentPage: page,
+    nextPage: Number(page) + 1,
+    previousPage,
+    result,
+  });
 };
 //====================== Get one post ======================
 export const getOnePost = async (req, res, next) => {
   const { postId } = req.params;
-  const post = await postModel
+  const post = postModel
     .findOne({
       _id: postId,
-        $or: [
-      { createdBy: req.user._id },
-      { privacy: 'public', createdBy: { $ne: req.user._id } }
-    ]})
+      $or: [
+        { createdBy: req.user._id },
+        { privacy: "public", createdBy: { $ne: req.user._id } },
+      ],
+    })
     .populate([
       {
         path: "createdBy",
-        select: ["name"]
+        select: ["name"],
       },
       {
         path: "comments",
-        select: ["commentBody", "createdBy","replies", "likes"],
+        select: ["commentBody", "createdBy", "replies", "likes"],
         populate: [
           {
             path: "replies",
@@ -325,9 +389,30 @@ export const getOnePost = async (req, res, next) => {
         ],
       },
     ]);
-  if (!post) {
+  const apiFeature = new ApiFeatures(post, req.query)
+    .pagination()
+    .filter()
+    .sort()
+    .search()
+    .select();
+  const result = await apiFeature.mongooseQuery;
+  const totalPages = await postModel.countDocuments();
+  const { page } = apiFeature.queryData;
+  let previousPage = page - 1;
+  if (previousPage <= 0) {
+    previousPage = "No previous page";
+  }
+  if (!result) {
     return next(new Error("Not found or Unauthorized", { cause: 404 }));
   }
-  return res.status(200).json({ message: "done", post });
+  return res
+    .status(200)
+    .json({
+      message: "done",
+      TotalPages: parseInt(totalPages),
+      currentPage: page,
+      nextPage: Number(page) + 1,
+      previousPage,
+      result,
+    });
 };
-

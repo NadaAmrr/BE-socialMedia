@@ -15,8 +15,25 @@ export const getReplyies = async (req, res, next) => {
   ) {
     return next(new Error("Unauthorized", { cause: 401 }));
   }
-  const replies = await replyModel.find({ commentId });
-  return res.status(200).json({ message: "Done", replies });
+  const replies = replyModel.find({ commentId });
+  const apiFeature = new ApiFeatures( replies ,req.query).pagination().filter().sort().search().select()
+  const result = await apiFeature.mongooseQuery;
+  const totalPages = await postModel.countDocuments();
+  const { page } = apiFeature.queryData;
+  let previousPage = page - 1;
+  if (previousPage <= 0) {
+    previousPage = "No previous page";
+  } 
+  return res
+    .status(200)
+    .json({
+      message: "Done",
+      TotalPages: parseInt(totalPages),
+      currentPage: page,
+      nextPage: Number(page) + 1,
+      previousPage,
+      result,
+    });
 };
 // ====================== Add Reply ======================
 export const addReply = async (req, res, next) => {

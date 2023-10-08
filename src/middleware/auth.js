@@ -20,6 +20,7 @@ export const auth = asyncHandler(async (req, res, next) => {
   }
   // Verify token
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  console.log("here");
   console.log({ iat: decoded.iat });
   // Find decoded ? and if it found without id
   if (!decoded?.id) {

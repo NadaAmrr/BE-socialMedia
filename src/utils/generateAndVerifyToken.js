@@ -16,7 +16,7 @@ export const accessTokenFun = ({id,email}={}) => {
     return generateToken({
       payload: { id, isLogged: true, email },
       signature: process.env.ACCESS_TOKEN_SECRET,
-      expiresIn: 60 * 60 * 60,
+      expiresIn: 60 * 60 * 60 * 24,
     });
   }
   // generate refresh token
