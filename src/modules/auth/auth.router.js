@@ -5,7 +5,7 @@ import { asyncHandler } from "../../utils/errorHandling.js";
 import * as validators from "./auth.validation.js";
 const router = Router();
 //====================== Sign up
-router.post("/signup", asyncHandler(authController.signup));
+router.post("/signup",  validation(validators.signupSchema), asyncHandler(authController.signup));
 //====================== Login
 router.post(
   "/login",
