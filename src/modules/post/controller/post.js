@@ -230,11 +230,18 @@ export const postUnLike = async (req, res, next) => {
 };
 //====================== get posts created yesterday ======================
 export const getYesterdayPosts = async (req, res, next) => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayFrom = yesterday.setHours(0, 0, 0);
+  const yesterdayTo = yesterday.setHours(23, 59, 59);
   const posts = postModel
     .find({
       createdAt: {
-        $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
-        $lt: new Date(new Date().setDate(new Date().getDate())),
+        $gte: yesterdayFrom,
+        $lt: yesterdayTo
+        // $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+        // $lt: new Date(new Date().setDate(new Date().getDate())),
       },
       privacy: "public",
     })
@@ -277,6 +284,23 @@ export const getYesterdayPosts = async (req, res, next) => {
 };
 //====================== get posts created today ======================
 export const getTodayPosts = async (req, res, next) => {
+  const before =new Date(new Date(new Date().setHours(0, 0, 0)).getDate() -1)
+  console.log(before);
+  console.log( new Date(new Date().setDate(new Date().getDate())) );
+  console.log(new Date(new Date().setHours(0, 0, 0)));
+  console.log(new Date(new Date().setHours(23, 59, 59)));
+  const today = new Date();
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+yesterday.setHours(0, 0, 0);
+const today1 = new Date();
+const yesterday1 = new Date(today);
+yesterday1.setDate(yesterday.getDate() - 1);
+yesterday1.setHours(23, 59, 59);
+
+console.log(yesterday);
+
+console.log(yesterday1)
   const posts = postModel
     .find({
       createdAt: {
