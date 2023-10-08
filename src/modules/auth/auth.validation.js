@@ -33,3 +33,15 @@ export const forgetPassword = {
       code: joi.string().required()
     }).required(),
   };
+    //token  schema
+    export const token = {
+      params: joi.object({
+        token: generalFields.id
+      }).required(),
+    };
+     //refreshtoken  schema
+     export const refreshToken = {
+      body: joi.object({
+        token: generalFields.id.required()
+      }).required(),
+    };

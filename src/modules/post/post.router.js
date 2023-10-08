@@ -72,6 +72,7 @@ router.patch(
   "/like/:id",
   auth,
   ConfirmedAndNotDeleted,
+  validation(validators.likeUnlike),
   asyncHandler(postController.postLike)
 );
 //====================== unLike post
@@ -79,6 +80,7 @@ router.patch(
   "/unlike/:id",
   auth,
   ConfirmedAndNotDeleted,
+  validation(validators.likeUnlike),
   asyncHandler(postController.postUnLike)
 );
 export default router;

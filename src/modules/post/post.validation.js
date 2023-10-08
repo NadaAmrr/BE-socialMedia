@@ -36,3 +36,8 @@ export const updatePostPrivecy = {
   }).required(),
 }
 //======================
+export const likeUnlike = {
+  params: joi.object({
+    postId: generalFields.id
+  }).required(),
+}

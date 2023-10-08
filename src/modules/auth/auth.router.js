@@ -13,14 +13,20 @@ router.post(
   asyncHandler(authController.login)
 );
 //====================== Confirm Email
-router.get("/confirmEmail/:token", asyncHandler(authController.confirmEmail));
+validation(validators.token),
+  router.get("/confirmEmail/:token", asyncHandler(authController.confirmEmail));
 //====================== New confirm Email
 router.get(
   "/requestNewConfirmEmail/:token",
+  validation(validators.token),
   asyncHandler(authController.newConfirmEmail)
 );
 //====================== unsubscribe
-router.get("/unsubscribe/:token", asyncHandler(authController.unsubscribe));
+router.get(
+  "/unsubscribe/:token",
+  validation(validators.token),
+  asyncHandler(authController.unsubscribe)
+);
 //====================== send code (Forget password)
 router.post(
   "/forgetPassword",
@@ -36,6 +42,7 @@ router.patch(
 //====================== Refresh token
 router.patch(
   "/refresh",
+  validation(validators.refreshToken),
   asyncHandler(authController.refreshToken)
 );
 export default router;

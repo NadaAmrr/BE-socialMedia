@@ -67,5 +67,4 @@ router.patch(
   auth,
   asyncHandler(userController.softDelete)
 );
-//====================== Refresh token
 export default router;
