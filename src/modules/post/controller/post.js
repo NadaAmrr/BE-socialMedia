@@ -185,7 +185,9 @@ export const postLike = async (req, res, next) => {
     // Likes not contain userId
     {
       _id: postId,
-      likes: { $nin: [_id] },
+      likes: { $nin: [_id] }
+      ,
+      unlikes: { $in: [_id] }
     },
     {
       $push: { likes: _id },
@@ -211,7 +213,10 @@ export const postUnLike = async (req, res, next) => {
   const { postId } = req.params;
   //update post
   const post = await postModel.findOneAndUpdate(
-    { _id: postId, unlikes: { $nin: [_id] }, likes: { $in: [_id] } },
+    { _id: postId, 
+      unlikes: { $nin: [_id] }, 
+      likes: { $in: [_id] }
+     },
     {
       $push: { unlikes: _id },
       $pull: { likes: _id },

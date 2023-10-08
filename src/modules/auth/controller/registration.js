@@ -30,7 +30,7 @@ export const signup = async (req, res, next) => {
   const checkUser = await userModel.findOne({ email });
   if (checkUser) {
     return next(
-      new ErrorClass(`this email ${email} already exists`, { cause: 400 })
+      new ErrorClass(`this email ${email} already exists`, StatusCodes.BAD_REQUEST)
     );
   }
   // Encrypt phone
@@ -103,7 +103,7 @@ export const confirmEmail = async (req, res, next) => {
   return user
     ? //  res.redirect("")
       res.status(200).json({ message: "Done" })
-    : next(new ErrorClass("Not register account", { cause: 404 }));
+    : next(new ErrorClass("Not register account", StatusCodes.NOT_FOUND));
 };
 //====================== New Confirm Email ======================
 export const newConfirmEmail = async (req, res, next) => {
@@ -149,16 +149,16 @@ export const login = async (req, res, next) => {
   const user = await userModel.findOne({ email });
   //check user
   if (!user) {
-    return next(new ErrorClass("In-valid login data", { cause: 404 }));
+    return next(new ErrorClass("In-valid login data", StatusCodes.NOT_FOUND));
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", { cause: 404 }));
+    return next(new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND));
   }
   // password matched ?
   const match = compare({ plaintext: password, hashValue: user.password });
   if (!match) {
-    return next(new ErrorClass("In-valid login data", { cause: 400 }));
+    return next(new ErrorClass("In-valid login data", StatusCodes.BAD_REQUEST));
   }
   // const refreshToken = refreshTokenFun(user._id , createRefreshToken._id)
   const accessToken = accessTokenFun({id: user._id , email:user.email} )
@@ -175,12 +175,12 @@ export const unsubscribe = async (req, res, next) => {
   const decoded = jwt.verify(token, process.env.EMAIL_SIGNATURE);
 
   if (!decoded?.id) {
-    return next(new ErrorClass("In-valid Payload", { cause: 400 }));
+    return next(new ErrorClass("In-valid Payload", StatusCodes.BAD_REQUEST));
   }
   // Find user by id
   const user = await userModel.findById(decoded.id);
   if (!user) {
-    return next(new ErrorClass("Not register account", { cause: 401 }));
+    return next(new ErrorClass("Not register account", StatusCodes.UNAUTHORIZED));
   }
   // check if email confirmed
   if (!user.confirmEmail) {
@@ -204,7 +204,7 @@ export const forgetPassword = async (req, res, next) => {
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", { cause: 404 }));
+    return next(new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND));
   }
   //Expire date for code OTP
   const expiresAt = Date.now() + 120000; // 2 minutes from now
@@ -238,7 +238,7 @@ export const resetPassword = async (req, res, next) => {
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", { cause: 400 }));
+    return next(new ErrorClass("You have to confirm your Email", StatusCodes.BAD_REQUEST));
   }
   //Check if code is expired
   if (Date.now() > user.expCode.getTime() ) {
@@ -264,9 +264,7 @@ export const refreshToken = async(req,res,next)=>{
   const { refreshToken } = req.body;
   if (!refreshToken?.startsWith(process.env.BEARER_KEY)) {
     return next(
-      new ErrorClass("authorization is required or in-valid BearerKey", {
-        cause: 400,
-      })
+      new ErrorClass("authorization is required or in-valid BearerKey", StatusCodes.BAD_REQUEST)
     );
   }
   const token = refreshToken.split(process.env.BEARER_KEY)[1];
