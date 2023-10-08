@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import commentModel from "../../../../DB/model/Comment.model.js";
 import postModel from "../../../../DB/model/Post.model.js";
 import replyModel from "../../../../DB/model/Reply.model.js";
@@ -193,7 +194,7 @@ export const postLike = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new ErrorClass("You are already liked", { cause: 400 }));
+    return next(new ErrorClass("You are already liked", StatusCodes.BAD_REQUEST));
   }
   const likeCounter = post.likes.length;
   const unlikeCounter = post.unlikes.length;
@@ -218,7 +219,7 @@ export const postUnLike = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new ErrorClass("You are already unliked", { cause: 400 }));
+    return next(new ErrorClass("You are already unliked", StatusCodes.BAD_REQUEST));
   }
   const likeCounter = post.likes.length;
   const unlikeCounter = post.unlikes.length;
@@ -411,7 +412,7 @@ export const getOnePost = async (req, res, next) => {
     previousPage = "No previous page";
   }
   if (!result) {
-    return next(new ErrorClass("Not found or Unauthorized", { cause: 404 }));
+    return next(new ErrorClass("Not found or Unauthorized", StatusCodes.NOT_FOUND));
   }
   return res
     .status(200)

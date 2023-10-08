@@ -33,7 +33,7 @@ export const updatePassword = async (req, res, next) => {
   // password matched ?
   const match = compare({ plaintext: oldPassword, hashValue: oldPasswordDB });
   if (!match) {
-    return next(new ErrorClass("Check your old password", { cause: 400 }));
+    return next(new ErrorClass("Check your old password", StatusCodes.BAD_REQUEST));
   }
   //Hash new password
   const hashNewPassword = hash({ plaintext: newPassword });
@@ -42,7 +42,7 @@ export const updatePassword = async (req, res, next) => {
     {password: hashNewPassword , updatedTime: Date.now() }
   );
   if (!user) {
-    return next(new ErrorClass("Not Updated", { cause: 400 }));
+    return next(new ErrorClass("Not Updated", StatusCodes.BAD_REQUEST));
   }
   return res.status(StatusCodes.ACCEPTED).json({ message: "done" });
 };
@@ -54,7 +54,7 @@ export const softDelete = async (req, res) => {
     { new: true }
   );
   if (!user) {
-    return next(new ErrorClass("In-valid user data", { cause: 400 }));
+    return next(new ErrorClass("In-valid user data", StatusCodes.BAD_REQUEST));
   } else {
     return res.status(StatusCodes.OK).json({ message: "done", user });
   }
@@ -304,7 +304,7 @@ export const logout = async (req, res) => {
     { new: true }
   );
   if (!user) {
-    return next(new ErrorClass("In-valid user id", { cause: 400 }));
+    return next(new ErrorClass("In-valid user id", StatusCodes.BAD_REQUEST));
   } else {
     return res.status(StatusCodes.OK).json({ message: "done", user });
   }

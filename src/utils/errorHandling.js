@@ -12,7 +12,7 @@ export const asyncHandler = (fn) => {
 //Error handling global middleware
 export const globalErrorHandling = (error, req, res, next) => {
   return res
-    .status(error.cause || 400)
+    .status(error.status || 400)
     .json({
       message: "G Error",
       messageError: error.message,

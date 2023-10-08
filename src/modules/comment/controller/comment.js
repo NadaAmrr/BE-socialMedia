@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import commentModel from "../../../../DB/model/Comment.model.js";
 import postModel from "../../../../DB/model/Post.model.js";
 import cloudinary from "../../../utils/cloudinary.js";
@@ -10,10 +11,10 @@ export const addComment = async (req, res, next) => {
   const { commentBody } = req.body;
   const post = await postModel.findById(postId);
   if (!post) {
-    return next(new ErrorClass("Not found post", { cause: 404 }));
+    return next(new ErrorClass("Not found post", StatusCodes.NOT_FOUND));
   }
   if (post.isDeleted) {
-    return next(new ErrorClass("This is post deleted", { cause: 400 }));
+    return next(new ErrorClass("This is post deleted", StatusCodes.BAD_REQUEST));
   }
   //  Check privacy
   //  Owner add comment ==> private public - createdBy == _id
@@ -43,12 +44,12 @@ export const updateComment = async (req, res, next) => {
   //Find post
   const post = await postModel.findById(postId);
   if (!post) {
-    return next(new ErrorClass("Not found post", { cause: 404 }));
+    return next(new ErrorClass("Not found post", StatusCodes.NOT_FOUND));
   }
   //Post is deleted?
   if (post.isDeleted) {
     return next(
-      new ErrorClass("You can not comment, this is post deleted", { cause: 400 })
+      new ErrorClass("You can not comment, this is post deleted", StatusCodes.BAD_REQUEST)
     );
   }
   //check post privacy
@@ -65,7 +66,7 @@ export const updateComment = async (req, res, next) => {
       { new: true }
     );
   if (!commentUpdate) {
-    new ErrorClass("Not updated", { cause: 404 });
+    new ErrorClass("Not updated", StatusCodes.NOT_FOUND);
   }
   return res.status(200).json({ message: "Done", commentUpdate });
 };
@@ -74,14 +75,14 @@ export const deleteComment = async (req, res, next) => {
   const { postId, commentId } = req.params;
   //check post
   const post = await postModel.findOne({ _id: postId });
-  if (!post) {return next(new ErrorClass("Not found post", { cause: 404 }))}
+  if (!post) {return next(new ErrorClass("Not found post", StatusCodes.NOT_FOUND))}
   //check post privacy
   if (post.privacy == "private" && post.createdBy.toString() !== req.user) {
     return next(new ErrorClass("You are not authorized to delete this comment",{cause: 404}));
   }
   //delete comment
   const comment = await commentModel.findById(commentId);
-  if (!comment) {new ErrorClass("Comment Not found", { cause: 404 })}
+  if (!comment) {new ErrorClass("Comment Not found", StatusCodes.NOT_FOUND)}
   if (comment.createdBy.toString() !== req.user._id) {
     return new ErrorClass("You are not authorized to delete this comment");
   }
@@ -107,7 +108,7 @@ export const commentLike = async (req, res, next) => {
     { new: true }
   );
   if (!comment) {
-    return next(new ErrorClass("You are already liked or not found comment", { cause: 400 }));
+    return next(new ErrorClass("You are already liked or not found comment", StatusCodes.BAD_REQUEST));
   }
   const likeCounter = comment.likes.length;
   const unlikeCounter = comment.unlikes.length;
@@ -135,7 +136,7 @@ export const commentUnLike = async (req, res, next) => {
     { new: true }
   );
   if (!comment) {
-    return next(new ErrorClass("You are already unliked", { cause: 400 }));
+    return next(new ErrorClass("You are already unliked", StatusCodes.BAD_REQUEST));
   }
   const likeCounter = comment.likes.length;
   const unlikeCounter = comment.unlikes.length;
