@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 import userModel from "../../DB/model/User.model.js";
 import { asyncHandler } from "../utils/errorHandling.js";
-
+import {
+  ReasonPhrases,
+  StatusCodes,
+  getReasonPhrase,
+  getStatusCode,
+} from "http-status-codes";
 //Authentication middleware to verfiy token and add data of (user) in request
 export const auth = asyncHandler(async (req, res, next) => {
   // Get token from headers
@@ -15,7 +20,7 @@ export const auth = asyncHandler(async (req, res, next) => {
   }
   const token = authorization.split(process.env.BEARER_KEY)[1];
   if (!token) {
-    return next(new Error("Token is required", { cause: 401 }));
+    return next(new Error("Token is required", StatusCodes.UNAUTHORIZED));
   }
   // Verify token
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -26,11 +31,11 @@ export const auth = asyncHandler(async (req, res, next) => {
   //check if user is in DB?
   const user = await userModel.findById(decoded.id);
   if (!user) {
-    return next(new Error("Not rejister account", { cause: 404 }));
+    return next(new Error("Not rejister account", StatusCodes.NOT_FOUND));
   }
   //Check expire sesion of user
   if (parseInt(user.updatedTime?.getTime()) / 1000 > decoded.iat) {
-    return next(new Error("Token is Expired , please login again", { cause: 400 }));
+    return next(new Error("Token is Expired , please login again", StatusCodes.BAD_REQUEST));
   }
   //To take data of user to next middleware
   //Add property (user) to request
@@ -42,11 +47,11 @@ export const auth = asyncHandler(async (req, res, next) => {
 export const ConfirmedAndNotDeleted = async (req, res, next) => {
   if (req.user.isDeleted) {
     return next(
-      new Error("This email is deleted Please login again", { cause: 401 })
+      new Error("This email is deleted Please login again", StatusCodes.UNAUTHORIZED)
     );
   }
   if (!req.user.confirmEmail) {
-    return next(new Error("Confirm your email", { cause: 400 }));
+    return next(new Error("Confirm your email", StatusCodes.BAD_REQUEST));
   }
   req.user = req.user;
   return next();

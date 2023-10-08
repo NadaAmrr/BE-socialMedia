@@ -60,10 +60,10 @@ export const deletePost = async (req, res, next) => {
   // Check if user is authorized to delete post
   const post = await postModel.findById(req.params.id);
   if (!post) {
-    return next(new ErrorClass("Not found", { cause: 404 }));
+    return next(new ErrorClass("Not found", StatusCodes.NOT_FOUND));
   }
   if (req.user._id.toString() != post.createdBy.toString()) {
-    return next(new ErrorClass("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", StatusCodes.UNAUTHORIZED));
   }
   //Delete images from cloudinary
   if (post.images) {
@@ -100,10 +100,10 @@ export const softDelete = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new ErrorClass("Not found", { cause: 404 }));
+    return next(new ErrorClass("Not found", StatusCodes.NOT_FOUND));
   }
   if (req.user._id.toString() != post.createdBy.toString()) {
-    return next(new ErrorClass("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", StatusCodes.UNAUTHORIZED));
   }
   return res.status(200).json({ message: "done", post });
 };
@@ -118,11 +118,11 @@ export const updatePost = async (req, res, next) => {
   const post = await postModel.findById(id);
   // Check if user is authorized to update post
   if (post.createdBy.toString() !== _id.toString()) {
-    return next(new ErrorClass("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", StatusCodes.UNAUTHORIZED));
   }
   // Check if post is soft deleted
   if (post.isDeleted || !post) {
-    return next(new ErrorClass("This is post deleted or not found", { cause: 404 }));
+    return next(new ErrorClass("This is post deleted or not found", StatusCodes.NOT_FOUND));
   }
   //Upload Image in cloudinary
   if (req.files.image) {
@@ -173,7 +173,7 @@ export const updatePostPrivecy = async (req, res, next) => {
   const { privacy } = req.body;
   const post = await postModel.updateOne({ _id: req.params.id }, { privacy });
   if (!post) {
-    return next(new ErrorClass("Not updated privacy", { cause: 404 }));
+    return next(new ErrorClass("Not updated privacy", StatusCodes.BAD_REQUEST));
   }
   return res.status(200).json({ message: "Done", post });
 };

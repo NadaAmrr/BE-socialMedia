@@ -32,7 +32,7 @@ export const addComment = async (req, res, next) => {
     return res.status(200).json({ message: "Done", comment });
   } else {
     return next(
-      new ErrorClass("This is post may be deleted", { cause: 403 })
+      new ErrorClass("This is post may be deleted", StatusCodes.FORBIDDEN)
     );
   }
 };
@@ -54,7 +54,7 @@ export const updateComment = async (req, res, next) => {
   }
   //check post privacy
   if (post.privacy == "private" && post.createdBy.toString() != req.user._id.toString()){
-    return next(new ErrorClass("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", StatusCodes.UNAUTHORIZED));
   }
     //Update comment
     const commentUpdate = await commentModel.findOneAndUpdate(
@@ -78,7 +78,7 @@ export const deleteComment = async (req, res, next) => {
   if (!post) {return next(new ErrorClass("Not found post", StatusCodes.NOT_FOUND))}
   //check post privacy
   if (post.privacy == "private" && post.createdBy.toString() !== req.user) {
-    return next(new ErrorClass("You are not authorized to delete this comment",{cause: 404}));
+    return next(new ErrorClass("You are not authorized to delete this comment",StatusCodes.BAD_REQUEST));
   }
   //delete comment
   const comment = await commentModel.findById(commentId);
