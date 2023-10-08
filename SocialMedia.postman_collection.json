@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"NadaAmr\",\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"Nada1234\",\r\n    \"cPassword\":\"Nada1234\",\r\n    \"phone\":\"01005043205\"\r\n}",
+							"raw": "{\r\n    \"name\":\"Nada Amr\",\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"Nada1234\",\r\n    \"cPassword\":\"Nada1234\",\r\n    \"phone\":\"01000000000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -116,7 +116,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"Nada1234\"\r\n}",
+							"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -372,7 +372,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\",\r\n    \"cPassword\":\"nada123456\",\r\n    \"code\":\"qdjjvg\"\r\n}",
+							"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\",\r\n    \"cPassword\":\"nada123456\",\r\n    \"code\":\"n08PdT\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -400,7 +400,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\",\r\n    \"cPassword\":\"nada123456\",\r\n    \"code\":\"Wuy5FX\"\r\n}",
+									"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\",\r\n    \"cPassword\":\"nada123456\",\r\n    \"code\":\"NsGgUZ\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -442,7 +442,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Mon, 02 Oct 2023 01:04:49 GMT"
+									"value": "Fri, 06 Oct 2023 22:35:25 GMT"
 								},
 								{
 									"key": "Connection",
@@ -455,6 +455,162 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"done\"\n}"
+						},
+						{
+							"name": "Time of code is expired",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"nada.amr1267@gmail.com\",\r\n    \"password\":\"nada123456\",\r\n    \"cPassword\":\"nada123456\",\r\n    \"code\":\"n08PdT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/auth/resetPassword",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"auth",
+										"resetPassword"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "67"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"43-X5phRX91K8AojWVoH+iPtF1vEU8\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 06 Oct 2023 22:45:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"G Error\",\n    \"messageError\": \"invalid code or expired code\"\n}"
+						}
+					]
+				},
+				{
+					"name": "refresh token",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\":\"Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY3NDA4NTksImV4cCI6MTY5ODA1NDg1OX0.myYlUxfTWYHbhuoGm0OuXqIUd45GT3vlKp72w3JBzgc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "refresh token",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refreshToken\":\"Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY3NDA4NTksImV4cCI6MTY5ODA1NDg1OX0.myYlUxfTWYHbhuoGm0OuXqIUd45GT3vlKp72w3JBzgc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/auth/refresh",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"status": "Accepted",
+							"code": 202,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "211"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"d3-Y+FJRJWEtMmZg+badxII73tlLqU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 05:02:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0xvZ2dlZCI6dHJ1ZSwiZW1haWwiOiJuYWRhLmFtcjEyNjdAZ21haWwuY29tIiwiaWF0IjoxNjk2NzQxMzYxLCJleHAiOjE2OTY3NDQ5NjF9.vuhbzdOu708eQOxLmh6TCB_gQ-geK8cAKz3tlscMqc8\"\n}"
 						}
 					]
 				}
@@ -1062,7 +1218,7 @@
 						"header": [
 							{
 								"key": "authorization",
-								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MWQ0MDkyZDkzYjc0ZTg4OThlYmI2NyIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY0MTY3OTMsImV4cCI6MTY5NjYzMjc5M30.5BsgDwSQLmR5MDl2W-yTg2PZGu1QLq-dih5pIXIH8Ag",
+								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY2Mjg2NTMsImV4cCI6MTY5Njg0NDY1M30.L47oBzLR6-GDo8PYXQNuVJIX-iO7fMyIRDDTHEJMZlE",
 								"type": "text"
 							}
 						],
@@ -1608,7 +1764,7 @@
 						"header": [
 							{
 								"key": "authorization",
-								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MWMyYmRhMWNmZGYxYWY3M2I5ZTAzZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTYzNTYxNDksImV4cCI6MTY5NjU3MjE0OX0.-rnn8NNfYwVx1_j7u2bREkkKyUUW51-HSfaX_ZH51Cw",
+								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY3MzQwMjcsImV4cCI6MTcwMTkxODAyN30.TJTgVJPo0AYMI9-6EyNxOvMj3RXxqsIZXHf9wFSUOwo",
 								"type": "text"
 							}
 						],
@@ -1617,7 +1773,7 @@
 							"formdata": [
 								{
 									"key": "content",
-									"value": "This 3rd post from nada , 4/10 without vedios and images",
+									"value": "This 5th post from nada , 8/10 without vedios and images",
 									"type": "text"
 								},
 								{
@@ -1837,6 +1993,98 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"Done\",\n    \"post\": {\n        \"content\": \"This second post from nada , 3/10 with vedios and images\",\n        \"images\": [\n            {\n                \"secure_url\": \"https://res.cloudinary.com/dpoasrljm/image/upload/v1696364496/social/post/651c2bda1cfdf1af73b9e03e/images/xilqvllyl7spm7hzsqdg.png\",\n                \"public_id\": \"social/post/651c2bda1cfdf1af73b9e03e/images/xilqvllyl7spm7hzsqdg\",\n                \"_id\": \"651c784ca32a78f9a6f6f128\",\n                \"id\": \"651c784ca32a78f9a6f6f128\"\n            },\n            {\n                \"secure_url\": \"https://res.cloudinary.com/dpoasrljm/image/upload/v1696364516/social/post/651c2bda1cfdf1af73b9e03e/images/bzd4sn78dc673ndk5tvy.png\",\n                \"public_id\": \"social/post/651c2bda1cfdf1af73b9e03e/images/bzd4sn78dc673ndk5tvy\",\n                \"_id\": \"651c784ca32a78f9a6f6f129\",\n                \"id\": \"651c784ca32a78f9a6f6f129\"\n            },\n            {\n                \"secure_url\": \"https://res.cloudinary.com/dpoasrljm/image/upload/v1696364529/social/post/651c2bda1cfdf1af73b9e03e/images/rrmlinppszgqbey4tlxv.png\",\n                \"public_id\": \"social/post/651c2bda1cfdf1af73b9e03e/images/rrmlinppszgqbey4tlxv\",\n                \"_id\": \"651c784ca32a78f9a6f6f12a\",\n                \"id\": \"651c784ca32a78f9a6f6f12a\"\n            }\n        ],\n        \"video\": [\n            {\n                \"secure_url\": \"https://res.cloudinary.com/dpoasrljm/video/upload/v1696364620/social/post/651c2bda1cfdf1af73b9e03e/videos/ptgrfvnwzlmqgksgadyh.mp4\",\n                \"public_id\": \"social/post/651c2bda1cfdf1af73b9e03e/videos/ptgrfvnwzlmqgksgadyh\",\n                \"_id\": \"651c784ca32a78f9a6f6f12b\",\n                \"id\": \"651c784ca32a78f9a6f6f12b\"\n            }\n        ],\n        \"pdf\": [],\n        \"likes\": [],\n        \"unlikes\": [],\n        \"createdBy\": \"651c2bda1cfdf1af73b9e03e\",\n        \"privacy\": \"public\",\n        \"isDeleted\": false,\n        \"_id\": \"651c784ca32a78f9a6f6f127\",\n        \"createdAt\": \"2023-10-03T20:23:40.178Z\",\n        \"updatedAt\": \"2023-10-03T20:23:40.178Z\",\n        \"__v\": 0,\n        \"id\": \"651c784ca32a78f9a6f6f127\"\n    }\n}"
+						},
+						{
+							"name": "Add post",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY3MzQwMjcsImV4cCI6MTcwMTkxODAyN30.TJTgVJPo0AYMI9-6EyNxOvMj3RXxqsIZXHf9wFSUOwo",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "content",
+											"value": "This 5th post from nada , 8/10 without vedios and images",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": [
+												"/D:/git-proj/mealify/images/chefs/chefs-1.jpg",
+												"/D:/git-proj/mealify/images/chefs/chefs-2.jpg",
+												"/D:/git-proj/mealify/images/chefs/chefs-3.jpg"
+											],
+											"disabled": true
+										},
+										{
+											"key": "video",
+											"type": "file",
+											"src": "/C:/Users/Nada/Videos/yunny2.mp4",
+											"disabled": true
+										},
+										{
+											"key": "privacy",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/post/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "379"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"17b-m2h2z6KVdgP1UKUoCob+j1TG9DY\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 04:06:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Done\",\n    \"post\": {\n        \"content\": \"This 5th post from nada , 8/10 without vedios and images\",\n        \"images\": [],\n        \"video\": [],\n        \"pdf\": [],\n        \"likes\": [],\n        \"unlikes\": [],\n        \"createdBy\": \"6520651f49e30eeefd4adf1e\",\n        \"privacy\": \"public\",\n        \"isDeleted\": false,\n        \"_id\": \"65222ab36e1aa74abe222844\",\n        \"createdAt\": \"2023-10-08T04:06:11.385Z\",\n        \"updatedAt\": \"2023-10-08T04:06:11.385Z\",\n        \"__v\": 0,\n        \"id\": \"65222ab36e1aa74abe222844\"\n    }\n}"
 						}
 					]
 				},
@@ -1847,12 +2095,12 @@
 						"header": [
 							{
 								"key": "authorization",
-								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MThmMDIyZjM0MTE2OGUyM2ZkYTE2MyIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6InJhbmFAZ21haWwuY29tIiwiaWF0IjoxNjk2MjE4Mjk2LCJleHAiOjE2OTY0MzQyOTZ9.YHe_RiQW1y-2eI8P4Tt03suU6sPi7oa2qNe5DujJGs8",
+								"value": "Hamada__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MjA2NTFmNDllMzBlZWVmZDRhZGYxZSIsImlzTG9nZ2VkIjp0cnVlLCJlbWFpbCI6Im5hZGEuYW1yMTI2N0BnbWFpbC5jb20iLCJpYXQiOjE2OTY3MzQwMjcsImV4cCI6MTcwMTkxODAyN30.TJTgVJPo0AYMI9-6EyNxOvMj3RXxqsIZXHf9wFSUOwo",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/post/like/651a45c10800215a28ad3830",
+							"raw": "http://localhost:3000/post/like/65221beca8f1303fe43e90dd",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1861,7 +2109,7 @@
 							"path": [
 								"post",
 								"like",
-								"651a45c10800215a28ad3830"
+								"65221beca8f1303fe43e90dd"
 							]
 						}
 					},
@@ -2769,7 +3017,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/post/today",
+							"raw": "http://localhost:3000/post/today?searchKey=4&page=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -2778,6 +3026,16 @@
 							"path": [
 								"post",
 								"today"
+							],
+							"query": [
+								{
+									"key": "searchKey",
+									"value": "4"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -2835,6 +3093,368 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"done\",\n    \"posts\": [\n        {\n            \"_id\": \"651c9af8df8586077c9e43aa\",\n            \"content\": \"This 3rd post from nada , 4/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"651c2bda1cfdf1af73b9e03e\",\n                \"name\": \"NadaAmr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-03T22:51:36.126Z\",\n            \"updatedAt\": \"2023-10-03T22:51:36.126Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"651c9af8df8586077c9e43aa\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Post today",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1210"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4ba-7G3nnQAznonJhIBEIZ9bkjTInEg\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 03:02:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"posts\": [\n        {\n            \"_id\": \"65221b79a8f1303fe43e90cd\",\n            \"content\": \"This 1rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:01:13.063Z\",\n            \"updatedAt\": \"2023-10-08T03:01:13.063Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221b79a8f1303fe43e90cd\"\n        },\n        {\n            \"_id\": \"65221b81a8f1303fe43e90d0\",\n            \"content\": \"This 2rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:01:21.034Z\",\n            \"updatedAt\": \"2023-10-08T03:01:21.034Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221b81a8f1303fe43e90d0\"\n        },\n        {\n            \"_id\": \"65221b87a8f1303fe43e90d3\",\n            \"content\": \"This 3rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:01:27.337Z\",\n            \"updatedAt\": \"2023-10-08T03:01:27.337Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221b87a8f1303fe43e90d3\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "using pagination",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today?page=2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "423"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a7-RjupOaCejSULYZhRKimzgZl+Ks4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 03:11:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"result\": [\n        {\n            \"_id\": \"65221beca8f1303fe43e90dd\",\n            \"content\": \"This 4rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:03:08.966Z\",\n            \"updatedAt\": \"2023-10-08T03:03:08.966Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221beca8f1303fe43e90dd\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "using filter",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today?content[in]=This 4rd post from nada , 8/10 without vedios and images",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									],
+									"query": [
+										{
+											"key": "content[in]",
+											"value": "This 4rd post from nada , 8/10 without vedios and images"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "423"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a7-RjupOaCejSULYZhRKimzgZl+Ks4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 03:22:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"result\": [\n        {\n            \"_id\": \"65221beca8f1303fe43e90dd\",\n            \"content\": \"This 4rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:03:08.966Z\",\n            \"updatedAt\": \"2023-10-08T03:03:08.966Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221beca8f1303fe43e90dd\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "pagination&filter",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today?content[in]=This 4rd post from nada , 8/10 without vedios and images&page=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									],
+									"query": [
+										{
+											"key": "content[in]",
+											"value": "This 4rd post from nada , 8/10 without vedios and images"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "423"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a7-RjupOaCejSULYZhRKimzgZl+Ks4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 03:24:20 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"result\": [\n        {\n            \"_id\": \"65221beca8f1303fe43e90dd\",\n            \"content\": \"This 4rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:03:08.966Z\",\n            \"updatedAt\": \"2023-10-08T03:03:08.966Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221beca8f1303fe43e90dd\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "using search",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today?searchKey=4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									],
+									"query": [
+										{
+											"key": "searchKey",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "423"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a7-RjupOaCejSULYZhRKimzgZl+Ks4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 03:30:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"result\": [\n        {\n            \"_id\": \"65221beca8f1303fe43e90dd\",\n            \"content\": \"This 4rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:03:08.966Z\",\n            \"updatedAt\": \"2023-10-08T03:03:08.966Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221beca8f1303fe43e90dd\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Post today",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/post/today?searchKey=4&page=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"post",
+										"today"
+									],
+									"query": [
+										{
+											"key": "searchKey",
+											"value": "4"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "471"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1d7-sEc+iUeK8qYXvxga+Xb0P2QomGI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 08 Oct 2023 04:04:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"done\",\n    \"currentPage\": \"1\",\n    \"nextPage\": 2,\n    \"previousPage\": 0,\n    \"result\": [\n        {\n            \"_id\": \"65221beca8f1303fe43e90dd\",\n            \"content\": \"This 4rd post from nada , 8/10 without vedios and images\",\n            \"images\": [],\n            \"video\": [],\n            \"pdf\": [],\n            \"likes\": [],\n            \"unlikes\": [],\n            \"createdBy\": {\n                \"_id\": \"6520651f49e30eeefd4adf1e\",\n                \"name\": \"Nada Amr\"\n            },\n            \"privacy\": \"public\",\n            \"isDeleted\": false,\n            \"createdAt\": \"2023-10-08T03:03:08.966Z\",\n            \"updatedAt\": \"2023-10-08T03:03:08.966Z\",\n            \"__v\": 0,\n            \"comments\": [],\n            \"id\": \"65221beca8f1303fe43e90dd\"\n        }\n    ]\n}"
 						}
 					]
 				},

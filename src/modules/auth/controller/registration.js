@@ -261,14 +261,22 @@ export const resetPassword = async (req, res, next) => {
 //====================== New Refresh Token ======================
 export const refreshToken = async(req,res,next)=>{
   const { refreshToken } = req.body;
-  if (!refreshToken) {
+  if (!refreshToken?.startsWith(process.env.BEARER_KEY)) {
+    return next(
+      new Error("authorization is required or in-valid BearerKey", {
+        cause: 400,
+      })
+    );
+  }
+  const token = refreshToken.split(process.env.BEARER_KEY)[1];
+  if (!token) {
     return next(new Error("Access Denied. No refresh token provided", StatusCodes.BAD_REQUEST));
   }
-  const decoded = verifyToken(refreshToken , process.env.REFRESH_TOKEN_SECRET)
+  const decoded = jwt.verify(token , process.env.REFRESH_TOKEN_SECRET)
   if (!decoded) {
     return next(new Error("In-valid refresh token", StatusCodes.BAD_REQUEST));
   }
-  const accessToken = accessTokenFun({id: user._id , email:user.email} )
+  const accessToken = accessTokenFun({id: decoded._id , email:decoded.email} )
   res.status(StatusCodes.ACCEPTED).json({ accessToken });
   res.header('authorization', `Hamada__${accessToken}`)
 }
