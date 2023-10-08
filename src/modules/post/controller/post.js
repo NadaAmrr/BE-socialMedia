@@ -3,6 +3,7 @@ import postModel from "../../../../DB/model/Post.model.js";
 import replyModel from "../../../../DB/model/Reply.model.js";
 import { ApiFeatures } from "../../../utils/apiFeatures.js";
 import cloudinary from "../../../utils/cloudinary.js";
+import { ErrorClass } from "../../../utils/errorClass.js";
 //====================== Add Post ======================
 export const addPost = async (req, res, next) => {
   const { content, privacy } = req.body;
@@ -58,10 +59,10 @@ export const deletePost = async (req, res, next) => {
   // Check if user is authorized to delete post
   const post = await postModel.findById(req.params.id);
   if (!post) {
-    return next(new Error("Not found", { cause: 404 }));
+    return next(new ErrorClass("Not found", { cause: 404 }));
   }
   if (req.user._id.toString() != post.createdBy.toString()) {
-    return next(new Error("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", { cause: 401 }));
   }
   //Delete images from cloudinary
   if (post.images) {
@@ -98,10 +99,10 @@ export const softDelete = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new Error("Not found", { cause: 404 }));
+    return next(new ErrorClass("Not found", { cause: 404 }));
   }
   if (req.user._id.toString() != post.createdBy.toString()) {
-    return next(new Error("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", { cause: 401 }));
   }
   return res.status(200).json({ message: "done", post });
 };
@@ -116,11 +117,11 @@ export const updatePost = async (req, res, next) => {
   const post = await postModel.findById(id);
   // Check if user is authorized to update post
   if (post.createdBy.toString() !== _id.toString()) {
-    return next(new Error("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", { cause: 401 }));
   }
   // Check if post is soft deleted
   if (post.isDeleted || !post) {
-    return next(new Error("This is post deleted or not found", { cause: 404 }));
+    return next(new ErrorClass("This is post deleted or not found", { cause: 404 }));
   }
   //Upload Image in cloudinary
   if (req.files.image) {
@@ -171,7 +172,7 @@ export const updatePostPrivecy = async (req, res, next) => {
   const { privacy } = req.body;
   const post = await postModel.updateOne({ _id: req.params.id }, { privacy });
   if (!post) {
-    return next(new Error("Not updated privacy", { cause: 404 }));
+    return next(new ErrorClass("Not updated privacy", { cause: 404 }));
   }
   return res.status(200).json({ message: "Done", post });
 };
@@ -192,7 +193,7 @@ export const postLike = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new Error("You are already liked", { cause: 400 }));
+    return next(new ErrorClass("You are already liked", { cause: 400 }));
   }
   const likeCounter = post.likes.length;
   const unlikeCounter = post.unlikes.length;
@@ -217,7 +218,7 @@ export const postUnLike = async (req, res, next) => {
     { new: true }
   );
   if (!post) {
-    return next(new Error("You are already unliked", { cause: 400 }));
+    return next(new ErrorClass("You are already unliked", { cause: 400 }));
   }
   const likeCounter = post.likes.length;
   const unlikeCounter = post.unlikes.length;
@@ -284,23 +285,6 @@ export const getYesterdayPosts = async (req, res, next) => {
 };
 //====================== get posts created today ======================
 export const getTodayPosts = async (req, res, next) => {
-  const before =new Date(new Date(new Date().setHours(0, 0, 0)).getDate() -1)
-  console.log(before);
-  console.log( new Date(new Date().setDate(new Date().getDate())) );
-  console.log(new Date(new Date().setHours(0, 0, 0)));
-  console.log(new Date(new Date().setHours(23, 59, 59)));
-  const today = new Date();
-const yesterday = new Date(today);
-yesterday.setDate(yesterday.getDate() - 1);
-yesterday.setHours(0, 0, 0);
-const today1 = new Date();
-const yesterday1 = new Date(today);
-yesterday1.setDate(yesterday.getDate() - 1);
-yesterday1.setHours(23, 59, 59);
-
-console.log(yesterday);
-
-console.log(yesterday1)
   const posts = postModel
     .find({
       createdAt: {
@@ -427,7 +411,7 @@ export const getOnePost = async (req, res, next) => {
     previousPage = "No previous page";
   }
   if (!result) {
-    return next(new Error("Not found or Unauthorized", { cause: 404 }));
+    return next(new ErrorClass("Not found or Unauthorized", { cause: 404 }));
   }
   return res
     .status(200)

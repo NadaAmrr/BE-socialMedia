@@ -20,6 +20,7 @@ import {
   verifyToken,
 } from "../../../utils/generateAndVerifyToken.js";
 import { ApiFeatures } from "../../../utils/apiFeatures.js";
+import { ErrorClass } from "../../../utils/errorClass.js";
 //====================== Update password
 export const updatePassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
@@ -32,7 +33,7 @@ export const updatePassword = async (req, res, next) => {
   // password matched ?
   const match = compare({ plaintext: oldPassword, hashValue: oldPasswordDB });
   if (!match) {
-    return next(new Error("Check your old password", { cause: 400 }));
+    return next(new ErrorClass("Check your old password", { cause: 400 }));
   }
   //Hash new password
   const hashNewPassword = hash({ plaintext: newPassword });
@@ -41,7 +42,7 @@ export const updatePassword = async (req, res, next) => {
     {password: hashNewPassword , updatedTime: Date.now() }
   );
   if (!user) {
-    return next(new Error("Not Updated", { cause: 400 }));
+    return next(new ErrorClass("Not Updated", { cause: 400 }));
   }
   return res.status(StatusCodes.ACCEPTED).json({ message: "done" });
 };
@@ -53,7 +54,7 @@ export const softDelete = async (req, res) => {
     { new: true }
   );
   if (!user) {
-    return next(new Error("In-valid user data", { cause: 400 }));
+    return next(new ErrorClass("In-valid user data", { cause: 400 }));
   } else {
     return res.status(StatusCodes.OK).json({ message: "done", user });
   }
@@ -303,7 +304,7 @@ export const logout = async (req, res) => {
     { new: true }
   );
   if (!user) {
-    return next(new Error("In-valid user id", { cause: 400 }));
+    return next(new ErrorClass("In-valid user id", { cause: 400 }));
   } else {
     return res.status(StatusCodes.OK).json({ message: "done", user });
   }

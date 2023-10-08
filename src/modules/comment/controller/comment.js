@@ -1,6 +1,7 @@
 import commentModel from "../../../../DB/model/Comment.model.js";
 import postModel from "../../../../DB/model/Post.model.js";
 import cloudinary from "../../../utils/cloudinary.js";
+import { ErrorClass } from "../../../utils/errorClass.js";
 
 //====================== Add comment ======================
 export const addComment = async (req, res, next) => {
@@ -9,10 +10,10 @@ export const addComment = async (req, res, next) => {
   const { commentBody } = req.body;
   const post = await postModel.findById(postId);
   if (!post) {
-    return next(new Error("Not found post", { cause: 404 }));
+    return next(new ErrorClass("Not found post", { cause: 404 }));
   }
   if (post.isDeleted) {
-    return next(new Error("This is post deleted", { cause: 400 }));
+    return next(new ErrorClass("This is post deleted", { cause: 400 }));
   }
   //  Check privacy
   //  Owner add comment ==> private public - createdBy == _id
@@ -30,7 +31,7 @@ export const addComment = async (req, res, next) => {
     return res.status(200).json({ message: "Done", comment });
   } else {
     return next(
-      new Error("This is post may be deleted", { cause: 403 })
+      new ErrorClass("This is post may be deleted", { cause: 403 })
     );
   }
 };
@@ -42,17 +43,17 @@ export const updateComment = async (req, res, next) => {
   //Find post
   const post = await postModel.findById(postId);
   if (!post) {
-    return next(new Error("Not found post", { cause: 404 }));
+    return next(new ErrorClass("Not found post", { cause: 404 }));
   }
   //Post is deleted?
   if (post.isDeleted) {
     return next(
-      new Error("You can not comment, this is post deleted", { cause: 400 })
+      new ErrorClass("You can not comment, this is post deleted", { cause: 400 })
     );
   }
   //check post privacy
   if (post.privacy == "private" && post.createdBy.toString() != req.user._id.toString()){
-    return next(new Error("Unauthorized", { cause: 401 }));
+    return next(new ErrorClass("Unauthorized", { cause: 401 }));
   }
     //Update comment
     const commentUpdate = await commentModel.findOneAndUpdate(
@@ -64,7 +65,7 @@ export const updateComment = async (req, res, next) => {
       { new: true }
     );
   if (!commentUpdate) {
-    new Error("Not updated", { cause: 404 });
+    new ErrorClass("Not updated", { cause: 404 });
   }
   return res.status(200).json({ message: "Done", commentUpdate });
 };
@@ -73,16 +74,16 @@ export const deleteComment = async (req, res, next) => {
   const { postId, commentId } = req.params;
   //check post
   const post = await postModel.findOne({ _id: postId });
-  if (!post) {return next(new Error("Not found post", { cause: 404 }))}
+  if (!post) {return next(new ErrorClass("Not found post", { cause: 404 }))}
   //check post privacy
   if (post.privacy == "private" && post.createdBy.toString() !== req.user) {
-    return next(new Error("You are not authorized to delete this comment",{cause: 404}));
+    return next(new ErrorClass("You are not authorized to delete this comment",{cause: 404}));
   }
   //delete comment
   const comment = await commentModel.findById(commentId);
-  if (!comment) {new Error("Comment Not found", { cause: 404 })}
+  if (!comment) {new ErrorClass("Comment Not found", { cause: 404 })}
   if (comment.createdBy.toString() !== req.user._id) {
-    return new Error("You are not authorized to delete this comment");
+    return new ErrorClass("You are not authorized to delete this comment");
   }
   await comment.remove();
   return res
@@ -106,7 +107,7 @@ export const commentLike = async (req, res, next) => {
     { new: true }
   );
   if (!comment) {
-    return next(new Error("You are already liked or not found comment", { cause: 400 }));
+    return next(new ErrorClass("You are already liked or not found comment", { cause: 400 }));
   }
   const likeCounter = comment.likes.length;
   const unlikeCounter = comment.unlikes.length;
@@ -134,7 +135,7 @@ export const commentUnLike = async (req, res, next) => {
     { new: true }
   );
   if (!comment) {
-    return next(new Error("You are already unliked", { cause: 400 }));
+    return next(new ErrorClass("You are already unliked", { cause: 400 }));
   }
   const likeCounter = comment.likes.length;
   const unlikeCounter = comment.unlikes.length;
