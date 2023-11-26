@@ -207,7 +207,7 @@ export const forgetPassword = async (req, res, next) => {
     return next(new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND));
   }
   //Expire date for code OTP
-  const expiresAt = Date.now() + 120000; // 2 minutes from now
+  const expiresAt = Date.now() + 300000; // 5 minutes from now
   //Generate code
   const code = nanoid(6);
   // Send code
@@ -235,6 +235,10 @@ export const resetPassword = async (req, res, next) => {
   let user = await userModel.findOne({ email });
   if (!user) {
     return next(new ErrorClass("invalid user information", StatusCodes.BAD_REQUEST));
+  }
+  //check if the user send code before 2 min
+  if (Date.now() < user.expCode + 120000) {
+    return next(new ErrorClass("Code is sent before, check your email", StatusCodes.BAD_REQUEST));
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
