@@ -1,4 +1,4 @@
-export const linkBtn = (link, buttonLinkName, message) => {
+export const linkBtn = ({link, buttonLinkName, message} = {}) => {
   return `
   <tr>
   <td style="padding: 10px 0px; ">
@@ -13,7 +13,7 @@ export const linkBtn = (link, buttonLinkName, message) => {
 </tr>
 `;
 };
-export const createHtml = (firstLink, secondLink, unsubscribe, txt) => {
+export const createHtml = ({firstLink, secondLink, unsubscribe, txt} = {}) => {
   return `
 <!DOCTYPE html>
 <html>
