@@ -3,12 +3,12 @@ import { generalFields } from "../../middleware/validation.js";
 //signup schema
 export const signupSchema = {
   body: joi.object({
-    name: joi.string().min(3).max(30).alphanum().required(),
+    name: joi.string().min(3).max(30).regex(/^[a-zA-Z\s]+$/).required(),
     email:generalFields.email,
     password: generalFields.password.required(),
     cPassword: generalFields.cPassword.valid(joi.ref("password")).required(),
     phone: generalFields.phone,
-    age: generalFields.age
+    age: generalFields.age,
   }).required(),
 };
 //login schema
@@ -42,6 +42,6 @@ export const forgetPassword = {
      //refreshtoken  schema
      export const refreshToken = {
       body: joi.object({
-        token: generalFields.id.required()
+        refreshToken: generalFields.id.required()
       }).required(),
     };
