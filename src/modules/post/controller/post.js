@@ -171,7 +171,11 @@ export const updatePost = async (req, res, next) => {
 //====================== Update post ( privecy) ======================
 export const updatePostPrivecy = async (req, res, next) => {
   const { privacy } = req.body;
-  const post = await postModel.updateOne({ _id: req.params.id }, { privacy });
+  const post = await postModel.updateOne({ _id: req.params.id  }, { privacy });
+  // Check if user is authorized to update post
+  if (post.createdBy.toString() !== _id.toString()) {
+    return next(new ErrorClass("Unauthorized", StatusCodes.UNAUTHORIZED));
+  }
   if (!post) {
     return next(new ErrorClass("Not updated privacy", StatusCodes.BAD_REQUEST));
   }

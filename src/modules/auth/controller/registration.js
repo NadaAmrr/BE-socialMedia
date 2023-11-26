@@ -18,24 +18,30 @@ import {
   generateToken,
   verifyToken,
   accessTokenFun,
-  refreshTokenFun
+  refreshTokenFun,
 } from "../../../utils/generateAndVerifyToken.js";
+import crypto from "crypto-js";
 import { nanoid } from "nanoid";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import refreshTokenModel from "../../../../DB/model/refreshToken.model.js";
 //====================== Sign up ======================
 export const signup = async (req, res, next) => {
-  let { name, email, password, age, phone } = req.body;
-  // Find User (email)
-  const checkUser = await userModel.findOne({ email });
-  if (checkUser) {
+  let { name, email, password, age } = req.body;
+  if (await userModel.findOne({ email })) {
     return next(
-      new ErrorClass(`this email ${email} already exists`, StatusCodes.BAD_REQUEST)
+      new ErrorClass(
+        `this email ${email} already exists`,
+        StatusCodes.BAD_REQUEST
+      )
     );
   }
-  // Encrypt phone
-  phone = encryptData(phone);
-  console.log({ phone_enc: phone });
+  if (req.body.phone) {
+    req.body.phone = crypto.AES.encrypt(
+      req.body.phone,
+      process.env.encryption_key
+    ).toString();
+  }
+  console.log({ phone_enc: req.body.phone });
   // Hash password
   const hashpassword = hash({ plaintext: password });
   // Create User
@@ -44,11 +50,11 @@ export const signup = async (req, res, next) => {
     email,
     password: hashpassword,
     age,
-    phone,
+    phone: req.body.phone,
   });
   user.save();
-  //Refresh token 
-  await refreshTokenModel.create({owner: user._id})
+  //Refresh token
+  await refreshTokenModel.create({ owner: user._id });
   // Generate token for confirm email
   const token = generateToken({
     payload: { id: user._id, email: user.email },
@@ -71,26 +77,30 @@ export const signup = async (req, res, next) => {
   await sendEmail({
     to: user.email,
     subject: "Confirm Email",
-    html: createHtml(
-      `${linkBtn(
-        `${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}`,
-        "Verify Email address",
-        "Use the following button to confirm your email"
-      )}`,
-      `${linkBtn(
-        `${req.protocol}://${req.headers.host}/auth/requestNewConfirmEmail/${tokenNewReq}`,
-        "New verify Email address",
-        "If you have trouble using the button above, please click the following button"
-      )}`,
-      `${linkBtn(
-        `${req.protocol}://${req.headers.host}/auth/unsubscribe/${tokenUnsubscribe}`,
-        "unsubscribe",
-        "If you did not create account, please click in the unsubscribe button"
-      )}`,
-      "Email Confirmation"
-    ),
+    html: createHtml({
+      firstLink: `${linkBtn({
+        link: `${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}`,
+        buttonLinkName: "Verify Email address",
+        message: "Use the following button to confirm your email",
+      })}`,
+      secondLink: `${linkBtn({
+        link: `${req.protocol}://${req.headers.host}/auth/requestNewConfirmEmail/${tokenNewReq}`,
+        buttonLinkName: "New verify Email address",
+        message:
+          "If you have trouble using the button above, please click the following button",
+      })}`,
+      unsubscribe: `${linkBtn({
+        link: `${req.protocol}://${req.headers.host}/auth/unsubscribe/${tokenUnsubscribe}`,
+        buttonLinkName: "unsubscribe",
+        message:
+          "If you did not create account, please click in the unsubscribe button",
+      })}`,
+      txt: "Email Confirmation",
+    }),
   });
-  return res.status(201).json({ message: "Done", user });
+  return res
+    .status(201)
+    .json({ message: "Please check your email to confirm it" });
 };
 //====================== Confirm Email ======================
 export const confirmEmail = async (req, res, next) => {
@@ -102,17 +112,14 @@ export const confirmEmail = async (req, res, next) => {
   });
   return user
     ? //  res.redirect("")
-      res.status(200).json({ message: "Done" })
+      res.status(200).json({ message: "Email confirmed successfully" })
     : next(new ErrorClass("Not register account", StatusCodes.NOT_FOUND));
 };
 //====================== New Confirm Email ======================
 export const newConfirmEmail = async (req, res, next) => {
   const { token } = req.params;
-
   const decoded = jwt.verify(token, process.env.EMAIL_SIGNATURE);
-
   const user = await userModel.findById(decoded.id);
-
   if (!user) {
     return res.send("<a>Ops you look like do not have account</a>");
   }
@@ -130,15 +137,13 @@ export const newConfirmEmail = async (req, res, next) => {
   await sendEmail({
     to: user.email,
     subject: "Confirm Email",
-    html: createHtml(
-      `${linkBtn(
+    html: createHtml({
+      firstLink: `${linkBtn(
         `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newtoken}`,
         "Verify Email address"
       )}`,
-      ``,
-      ``,
-      "New Email Confirmation"
-    ),
+      txt: "New Email Confirmation",
+    }),
   });
   return res.send(`<p>Check your inbox now</p>`);
 };
@@ -153,7 +158,9 @@ export const login = async (req, res, next) => {
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND));
+    return next(
+      new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND)
+    );
   }
   // password matched ?
   const match = compare({ plaintext: password, hashValue: user.password });
@@ -161,31 +168,32 @@ export const login = async (req, res, next) => {
     return next(new ErrorClass("In-valid login data", StatusCodes.BAD_REQUEST));
   }
   // const refreshToken = refreshTokenFun(user._id , createRefreshToken._id)
-  const accessToken = accessTokenFun({id: user._id , email:user.email} )
-  const refreshToken = refreshTokenFun({id: user._id , email:user.email} )
- 
+  const accessToken = accessTokenFun({ id: user._id, email: user.email });
+  const refreshToken = refreshTokenFun({ id: user._id, email: user.email });
+
   user.isOnline = true;
   await user.save();
-  return res.status(StatusCodes.OK).json({ message: "Done", accessToken, refreshToken });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Done", accessToken, refreshToken });
 };
 //====================== unsubscribe ======================
 export const unsubscribe = async (req, res, next) => {
   const { token } = req.params;
-
   const decoded = jwt.verify(token, process.env.EMAIL_SIGNATURE);
-
   if (!decoded?.id) {
     return next(new ErrorClass("In-valid Payload", StatusCodes.BAD_REQUEST));
   }
   // Find user by id
   const user = await userModel.findById(decoded.id);
   if (!user) {
-    return next(new ErrorClass("Not register account", StatusCodes.UNAUTHORIZED));
+    return next(
+      new ErrorClass("Not register account", StatusCodes.UNAUTHORIZED)
+    );
   }
   // check if email confirmed
   if (!user.confirmEmail) {
     const deleteUser = await userModel.deleteOne({ _id: decoded.id });
-
     return res.send({ message: "Account deleted", deleteUser });
   } else if (user.confirmEmail) {
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -204,45 +212,57 @@ export const forgetPassword = async (req, res, next) => {
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND));
+    return next(
+      new ErrorClass("You have to confirm your Email", StatusCodes.NOT_FOUND)
+    );
   }
   //Expire date for code OTP
-  const expiresAt = Date.now() + 120000; // 2 minutes from now
+  const expiresAt = Date.now() + 300000; // 5 minutes from now
   //Generate code
   const code = nanoid(6);
   // Send code
   await sendEmail({
     to: user.email,
     subject: "Forget password",
-    html: createHtml(
-      `${linkBtn(
-        ``,
-        `${code}`,
-        `${code} Do not share this OTO with anyone, It will expired`
-      )}`,
-      ``,
-      ``,
-      "Forget password"
-    ),
-  });
-  await userModel.updateOne({ email }, { code , expCode: expiresAt });
+    html: createHtml({
+      firstLink: `${linkBtn({
+        message: `${code} Do not share this OTO with anyone, It will expired`,
+      })}`,
+      txt: "Forget password",
+    }),
+  }),
+    await userModel.updateOne({ email }, { code, expCode: expiresAt });
   res.status(StatusCodes.ACCEPTED).json({ message: "Check your email" });
 };
 //====================== Reset password ======================
 export const resetPassword = async (req, res, next) => {
   let { code, password, email } = req.body;
-  //Find user(email)
   let user = await userModel.findOne({ email });
   if (!user) {
-    return next(new ErrorClass("invalid user information", StatusCodes.BAD_REQUEST));
+    return next(
+      new ErrorClass("invalid user information", StatusCodes.BAD_REQUEST)
+    );
+  }
+  //check if the user send code before 2 min
+  if (Date.now() < user.expCode + 120000) {
+    return next(
+      new ErrorClass(
+        "Code is sent before, check your email",
+        StatusCodes.BAD_REQUEST
+      )
+    );
   }
   //check if user is email confirmed true?
   if (!user.confirmEmail) {
-    return next(new ErrorClass("You have to confirm your Email", StatusCodes.BAD_REQUEST));
+    return next(
+      new ErrorClass("You have to confirm your Email", StatusCodes.BAD_REQUEST)
+    );
   }
   //Check if code is expired
-  if (Date.now() > user.expCode.getTime() ) {
-    return next(new ErrorClass("invalid code or expired code", StatusCodes.BAD_REQUEST));
+  if (Date.now() > user.expCode.getTime()) {
+    return next(
+      new ErrorClass("invalid code or expired code", StatusCodes.BAD_REQUEST)
+    );
   }
   //check code
   if (code != user.code) {
@@ -257,25 +277,35 @@ export const resetPassword = async (req, res, next) => {
     { _id: user._id },
     { password, code: newCode, updatedTime: Date.now() }
   );
-  res.status(StatusCodes.ACCEPTED).json({ message: "done" });
+  res.status(StatusCodes.ACCEPTED).json({ message: "Password changed successfully" });
 };
 //====================== New Refresh Token ======================
-export const refreshToken = async(req,res,next)=>{
+export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
   if (!refreshToken?.startsWith(process.env.BEARER_KEY)) {
     return next(
-      new ErrorClass("authorization is required or in-valid BearerKey", StatusCodes.BAD_REQUEST)
+      new ErrorClass(
+        "authorization is required or in-valid BearerKey",
+        StatusCodes.BAD_REQUEST
+      )
     );
   }
   const token = refreshToken.split(process.env.BEARER_KEY)[1];
   if (!token) {
-    return next(new ErrorClass("Access Denied. No refresh token provided", StatusCodes.BAD_REQUEST));
+    return next(
+      new ErrorClass(
+        "Access Denied. No refresh token provided",
+        StatusCodes.BAD_REQUEST
+      )
+    );
   }
-  const decoded = jwt.verify(token , process.env.REFRESH_TOKEN_SECRET)
+  const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
   if (!decoded) {
-    return next(new ErrorClass("In-valid refresh token", StatusCodes.BAD_REQUEST));
+    return next(
+      new ErrorClass("In-valid refresh token", StatusCodes.BAD_REQUEST)
+    );
   }
-  const accessToken = accessTokenFun({id: decoded._id , email:decoded.email} )
+  const accessToken = accessTokenFun({ id: decoded._id, email: decoded.email });
   res.status(StatusCodes.ACCEPTED).json({ accessToken });
-  res.header('authorization', `Hamada__${accessToken}`)
-}
+  res.header("authorization", `Hamada__${accessToken}`);
+};
