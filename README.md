@@ -1,7 +1,7 @@
 # BE-socialMedia
 This is a Node.js application that creates a social media platform with user authentication, post management, and comment management features. The application uses MongoDB as the database and includes APIs for user authentication, post management, and comment management. The application also includes a function that runs every day at 9:00 pm and sends a reminder email to all users who have not confirmed their emails to warn them about the potential for their accounts to be deleted.
 
-"For more information on how to use the Social Media Platform API, please refer to the documentation at the following link <a href="https://documenter.getpostman.com/view/26559299/2s9YJdWN5t">Documentation</a>."
+"For more information on how to use the Social Media Platform API, please refer to the documentation at the following link <a href="https://documenter.getpostman.com/view/26559299/2s9YeD9ZNJ">Documentation</a>."
 
 ## Getting Started
 To use the Social Media Platform API, you will need to sign up for an account and obtain an API key. You can then use the API to create posts, add comments, and manage user profiles.
