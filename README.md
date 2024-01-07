@@ -90,4 +90,6 @@ To use the Social Media Platform API, you can make HTTP requests to the API endp
 The Social Media Platform API is licensed under the MIT License.
 
 
+## Visitors Count
 
+<img align="left" style="background: blue;" src="https://profile-counter.glitch.me/BE-socialMedia/count.svg" alt="Loading">
